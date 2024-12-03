@@ -11,7 +11,7 @@ const port = process.env.PORT || 5000;
 //  middlewares
 const corsOptions = {
   origin: [
-    "http://localhost:3000",
+    "http://localhost:5173",
     "",
     "",
   ],
@@ -19,7 +19,9 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
-app.use(express.json());
+// app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.9odt6wv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 //console.log(uri)
@@ -51,7 +53,7 @@ async function run() {
       console.log(result);
       res.send(result);
     });
-    
+    //delete a book by id
     app.delete("/books/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
