@@ -11,7 +11,7 @@ const port = process.env.PORT || 5000;
 //  middlewares
 const corsOptions = {
   origin: [
-    "http://localhost:5173",
+    "http://localhost:3000",
     "",
     "",
   ],
@@ -42,6 +42,20 @@ async function run() {
       const book = req.body;
       console.log("new book", book);
       const result = await bookCollection.insertOne(book);
+      res.send(result);
+    });
+     // get all books data from db
+     app.get("/books", async (req, res) => {
+      const cursor = bookCollection.find();
+      const result = await cursor.toArray();
+      console.log(result);
+      res.send(result);
+    });
+    
+    app.delete("/books/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bookCollection.deleteOne(query);
       res.send(result);
     });
     // Send a ping to confirm a successful connection
