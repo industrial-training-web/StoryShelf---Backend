@@ -46,13 +46,24 @@ async function run() {
       const result = await bookCollection.insertOne(book);
       res.send(result);
     });
-     // get all books data from db
-     app.get("/books", async (req, res) => {
-      const cursor = bookCollection.find();
-      const result = await cursor.toArray();
-      console.log(result);
-      res.send(result);
-    });
+     
+      app.get("/books/:userEmail", async (req, res) => {
+        try {
+          const userEmail = req.params.userEmail; 
+          console.log("User email:", userEmail);
+      
+          const result = await bookCollection
+            .find({ userEmail: userEmail }) 
+            .toArray();
+      
+          console.log("Fetched books:", result);
+          res.send(result);
+        } catch (error) {
+          console.error("Error fetching books:", error);
+          res.status(500).send({ message: "Failed to fetch books" });
+        }
+      });
+      
     //delete a book by id
     app.delete("/books/:id", async (req, res) => {
       const id = req.params.id;
